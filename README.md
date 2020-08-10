@@ -207,13 +207,20 @@ CREATE TABLE players ( # child table is players
 
 **Add a foreign key constraint to an existing table**
 
-Step: 1
-
 ```sql
 ALTER TABLE child_table
 ADD CONSTRAINT constraint_name
 FOREIGN KEY (fk_columns)
 REFERENCES parent_table (parent_key_columns);
+```
+
+**Add a foreign key constraint to an existing table with `ON DELETE CASCADE`**
+
+Step: 1
+
+```sql
+ALTER TABLE child_table
+DROP CONSTRAINT constraint_fk;
 ```
 
 Step: 2
@@ -226,18 +233,11 @@ REFERENCES parent_table(parent_key_columns)
 ON DELETE CASCADE;
 ```
 
-**Add a foreign key constraint to an existing table with `ON DELETE CASCADE`**
-
 ### 2. Finding Data Queries
 
 #### SELECT: used to select data from a database
 
 - `SELECT` \* `FROM` table_name;
-
-```sql
-ALTER TABLE child_table
-DROP CONSTRAINT constraint_fkey;
-```
 
 #### DISTINCT: filters away duplicate values and returns rows of specified column
 
