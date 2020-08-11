@@ -2,7 +2,7 @@
 
 ![PostgreSQL at a glance](./resources/postgresql-banner.jpg)
 
-A quick important topics about PostgreSQL (SQL).
+> A quick important topics about PostgreSQL (SQL).
 
 This repository is constantly being updated and added to by the community. Pull requests are welcome.
 
@@ -428,3 +428,59 @@ Not all database systems support `SELECT TOP`. The MySQL equivalent is the `LIMI
 #### `DROP VIEW`: drop a view
 
 - `DROP VIEW` view_name;
+
+### 7. Date Queries
+
+```sql
+-- Get the current date
+SELECT NOW(); # alternative, SELECT CURRENT_DATE;
+SELECT NOW()::date;
+SELECT NOW()::time;
+
+-- Get the current date in a specific format
+SELECT TO_CHAR(NOW()::DATE, 'dd/mm/yyyy'); # 23/06/2020
+SELECT TO_CHAR(NOW()::DATE, 'Mon dd, yyyy'); # Jun 23, 2020
+
+-- Get the interval between two dates
+SELECT NOW() - hire_date FROM table_name; # 4191 days 08:25:30.634458
+
+-- Calculate ages in years, months, and days
+SELECT AGE(birth_date) FROM table_name; # 36 years 5 mons 22 days
+SELECT AGE('2020-03-15', birth_date); # 34 years 5 mons 22 days
+
+-- Extract year, quarter, month, week, day from a date value
+SELECT EXTRACT (YEAR FROM birth_date) AS YEAR, EXTRACT (MONTH FROM birth_date) AS MONTH, EXTRACT (DAY FROM birth_date) AS DAY FROM table_name;
+```
+
+## [Transaction](https://www.postgresqltutorial.com/postgresql-transaction/)
+
+A database transaction is a **single unit of work** that consists of **one or more operations**. A transactional database guarantees that all the updates made by a transaction are logged in permanent storage (i.e., on disk) before the transaction is reported complete. So the changes will take effect only when all operations of the transaction have successfully finished. If one of the operations failed to execute then none of the operations will take effect at all.\
+\
+A PostgreSQL transaction is **atomic**, **consistent**, **isolated**, and **durable**. These properties are often referred to as ACID:
+
+- Atomicity guarantees that for a series of operations performed against a database, either every one of them commits together, or they’re all rolled back; no in between states are allowed.
+- Consistency ensures the change to data written to the database must be valid and follow predefined rules.
+- Isolation determines how transaction integrity is visible to other transactions.
+- Durability makes sure that transactions that have been committed will be stored in the database permanently.
+
+```sql
+-- start transaction
+BEGIN; # BEGIN WORK; or BEGIN TRANSACTION;
+
+-- deduct 1000 from account 1
+UPDATE accounts
+SET balance = balance - 1000
+WHERE id = 1;
+
+-- add 1000 to account 2
+UPDATE accounts
+SET balance = balance + 1000
+WHERE id = 2;
+
+-- select the data from accounts
+SELECT id, name, balance
+FROM accounts;
+
+-- commit the change (or roll it back later)
+COMMIT; # COMMIT WORK; or COMMIT TRANSACTION;
+```
