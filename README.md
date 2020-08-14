@@ -44,7 +44,7 @@ $ sudo adduser username
 # Example: sudo adduser foyez
 ```
 
-- Switch over to the postgres account and connect to the database by typing:
+- Switch over to the postgres account and accessing to postgres prompt by typing:
 
 ```sh
 $ sudo -i -u postgres
@@ -57,6 +57,18 @@ $ psql
 $ sudo -u postgres psql
 ```
 
+- connected to specific database, host & port:
+
+```
+$ psql -h localhost -p 5432 -U foyez test
+```
+
+- connected to a database from postgres prompt:
+
+```sql
+foyez=# \c db_name
+```
+
 - connect to a different database
 
 ```sh
@@ -66,11 +78,17 @@ $ psql -d postgres
 - create a new user & give permission to create a DB
 
 ```sql
+-- create a new user without password
 postgres=# CREATE USER new_username;
-CREATE ROLE
 
+-- create a new user with password
+postgres=# CREATE USER new_username WITH SUPERUSER PASSWORD 'testpass';
+
+-- create password for an existing user
+postgres=# ALTER USER username WITH PASSWORD 'testpass';
+
+-- give permissions to a existing user
 postgres=# ALTER USER new_username SUPERUSER CREATEDB;
-ALTER ROLE
 ```
 
 - Check DB users by typing: `\du`
@@ -91,10 +109,11 @@ postgres=# \q
 postgres=# \conninfo
 ```
 
-- show exists database by typing: `\list`
+- show exists database by typing: `\list` or `\l`
 
 ```sql
 postgres=# \list
+postgres=# \l
 ```
 
 - show exists database tables and sequences by typing: `\d`
@@ -109,7 +128,37 @@ postgres=# \d
 postgres=# \dt
 ```
 
+- show table details by typing: `\d table_name`
+
+```sql
+postgres=# \d table_name
+```
+
+- to know all psql commands:
+
+```
+$ psql --help
+```
+
+or
+
+```sql
+postgres=# \?
+```
+
+- clear postgres prompt by typing: `CTRL+L`
+
+- Insert queries from sql file:
+
+```sql
+postgres=# \i /path/file_name.sql
+```
+
+- Expanded display by typing: `\x`
+
 ## Queries at a Glance <sup>[source](https://github.com/enochtangg/quick-SQL-cheatsheet#create)</sup>
+
+> You can also watch out official document: [link](https://www.postgresql.org/docs/current/index.html)
 
 ### 1. Creating and Deleting Queries
 
@@ -238,6 +287,7 @@ ON DELETE CASCADE;
 #### SELECT: used to select data from a database
 
 - `SELECT` \* `FROM` table_name;
+- `SELECT` column_name `FROM` table_name `LIMIT` 10;
 
 #### DISTINCT: filters away duplicate values and returns rows of specified column
 
@@ -364,11 +414,29 @@ Not all database systems support `SELECT TOP`. The MySQL equivalent is the `LIMI
 #### `MODIFY`: change data type of column
 
 - `ALTER TABLE` table_name `MODIFY` column_name data_type;
+- `ALTER TABLE` table_name `ALTER COLUMN` column_name `TYPE` datatype; (postgresql)
 
 #### `DROP COLUMN`: Delete a column
 
 - `ALTER TABLE` table_name `DROP COLUMN` column_name;
 - `ALTER TABLE` table_name `DROP COLUMN` column_name CASCADE; (drop the column and all of its dependent objects)
+
+#### ADD & delete primary key
+
+- `ALTER TABLE` table_name `ADD PRIMARY KEY`(column_name);
+- `ALTER TABLE` table_name `DROP CONSTRAINT` table_name_pkey;
+
+#### ADD & delete unique constraint
+
+- `ALTER TABLE` persons `ADD CONSTRAINT` constraint_name `UNIQUE`(column_name);
+- `ALTER TABLE` persons `ADD UNIQUE`(column_name);
+- `ALTER TABLE` table_name `DROP CONSTRAINT` constraint_name;
+
+#### Add & delete check constraint
+
+- `ALTER TABLE` table_name `ADD CONSTRAINT` constraint_name `CHECK`(gender IN ('value1', 'value2'));
+- `ALTER TABLE` table_name `ADD CHECK`(gender IN ('value1', 'value2'));
+- `ALTER TABLE` table_name `DROP CONSTRAINT` constraint_name;
 
 ### 4. Aggregate Functions Queries
 
@@ -443,6 +511,8 @@ SELECT TO_CHAR(NOW()::DATE, 'Mon dd, yyyy'); # Jun 23, 2020
 
 -- Get the interval between two dates
 SELECT NOW() - hire_date FROM table_name; # 4191 days 08:25:30.634458
+SELECT NOW() - INTERVAL '10 YEARS';
+SELECT (NOW() + INTERVAL '10 DAYS')::DATE;
 
 -- Calculate ages in years, months, and days
 SELECT AGE(birth_date) FROM table_name; # 36 years 5 mons 22 days
