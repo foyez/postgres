@@ -19,8 +19,8 @@ This repository is constantly being updated and added to by the community. Pull 
   - [4. Aggregate Functions Queries](#4-aggregate-functions-queries)
   - [5. JOIN Queries](#5-join-queries)
   - [6. View Queries](#6-view-queries)
-  - [7. Insert and Export Data from Files](#7-insert-and-export-data-from-queries)
-  - [8. Date Queries](#7-date-queries)
+  - [7. Insert and Export Data from Files](#7-insert-and-export-data-from-files)
+  - [8. Date Queries](#8-date-queries)
 - [Transaction](#transaction)
 
 ## What is database
