@@ -6,6 +6,23 @@
 
 This repository is constantly being updated and added to by the community. Pull requests are welcome.
 
+## Table of contents
+
+- [What is database](#what-is-database)
+- [PostgreSQL](#postgresql)
+- [PostgreSQL Installation](#postgresql-installation)
+- [PostgreSQL Basic Commands](#postgresql-basic-commands)
+- [Queries at a Glance](#queries-at-a-glance)
+  - [1. Creating and Deleting Queries](#1-creating-and-deleting-queries)
+  - [2. Finding Data Queries](#2-finding-data-queries)
+  - [3. Data Modification Queries](#3-data-modification-queries)
+  - [4. Aggregate Functions Queries](#4-aggregate-functions-queries)
+  - [5. JOIN Queries](#5-join-queries)
+  - [6. View Queries](#6-view-queries)
+  - [7. Insert and Export Data from Files](#7-insert-and-export-data-from-queries)
+  - [8. Date Queries](#7-date-queries)
+- [Transaction](#transaction)
+
 ## What is database
 
 Database is a place where we **store**, **manipulate** and **retrieve** data
@@ -97,7 +114,7 @@ postgres=# ALTER USER new_username SUPERUSER CREATEDB;
 postgres=# \du
 ```
 
-- Exit the interactive Postgres session by typing: `\q`
+- Exit the interactive Postgres session by typing: `\q` or `CTRL+D`
 
 ```
 postgres=# \q
@@ -156,8 +173,9 @@ postgres=# \i /path/file_name.sql
 
 - Expanded display by typing: `\x`
 
-## Queries at a Glance <sup>[source](https://github.com/enochtangg/quick-SQL-cheatsheet#create)</sup>
+## Queries at a Glance
 
+> Sql cheatsheet: [link](https://github.com/enochtangg/quick-SQL-cheatsheet#create)\
 > You can also watch out official document: [link](https://www.postgresql.org/docs/current/index.html)
 
 ### 1. Creating and Deleting Queries
@@ -397,6 +415,42 @@ Not all database systems support `SELECT TOP`. The MySQL equivalent is the `LIMI
 - `INSERT` `INTO` table_name (column1, column2) `VALUES` (value1, value2);
 - `INSERT` `INTO` table_name `VALUES` (value1, value2);
 
+### Upsert (update or insert): when you insert a new row into the table, PostgreSQL will update the row if it already exists, otherwise, it will insert the new row
+
+> help link: [details](https://www.postgresqltutorial.com/postgresql-upsert/)
+
+| id  | name      | email                 |
+| --- | --------- | --------------------- |
+| 1   | Microsoft | contact@microsoft.com |
+
+```sql
+INSERT INTO customers (name, email) VALUES('Microsoft' 'hotline@microsoft.com') ON CONFLICT (name) DO NOTHING;
+
+-- OR
+
+INSERT INTO customers (name, email) VALUES('Microsoft' 'hotline@microsoft.com') ON CONFLICT DO NOTHING;
+```
+
+Output:
+
+```
+Do Nothing
+```
+
+```sql
+INSERT INTO customers (name, email) VALUES('Microsoft' 'hotline@microsoft.com') ON CONFLICT (name) DO UPDATE SET email = EXCLUDED.email || ';' || customers.email;
+```
+
+Output:
+
+```
+INSERT 0 1
+```
+
+| id  | name      | email                                       |
+| --- | --------- | ------------------------------------------- |
+| 1   | Microsoft | hotmail@microsoft.com;contact@microsoft.com |
+
 #### `UPDATE`: used to modify the existing records in a table
 
 - `UPDATE` table_name `SET` column1=value1, column2=value2 `WHERE` condition;
@@ -497,7 +551,28 @@ Not all database systems support `SELECT TOP`. The MySQL equivalent is the `LIMI
 
 - `DROP VIEW` view_name;
 
-### 7. Date Queries
+### 7. Insert and Export Data from Files
+
+#### Insert & Export Data from/to CSV file
+
+```sql
+\COPY table_name (column1, column2, ...) FROM '/absolute_path/file_name.csv' DELIMITER ',' CSV HEADER;
+
+\COPY table_name (column1, column2, ...) TO '/absolute_path/file_name.csv' DELIMITER ',' CSV HEADER;
+\COPY table_name (SELECT * FROM table_name) TO '/absolute_path/file_name.csv' DELIMITER ',' CSV HEADER;
+```
+
+#### Insert & Export Data from/to sql file
+
+```
+# import
+postgres# \i /absolute_path/file_name.sql
+
+# export
+$ pg_dump -U username -s database_name >> sqlfile.sql
+```
+
+### 8. Date Queries
 
 ```sql
 -- Get the current date
@@ -522,7 +597,9 @@ SELECT AGE('2020-03-15', birth_date); # 34 years 5 mons 22 days
 SELECT EXTRACT (YEAR FROM birth_date) AS YEAR, EXTRACT (MONTH FROM birth_date) AS MONTH, EXTRACT (DAY FROM birth_date) AS DAY FROM table_name;
 ```
 
-## [Transaction](https://www.postgresqltutorial.com/postgresql-transaction/)
+## Transaction
+
+> helpful resources: [link](https://www.postgresqltutorial.com/postgresql-transaction/)
 
 A database transaction is a **single unit of work** that consists of **one or more operations**. A transactional database guarantees that all the updates made by a transaction are logged in permanent storage (i.e., on disk) before the transaction is reported complete. So the changes will take effect only when all operations of the transaction have successfully finished. If one of the operations failed to execute then none of the operations will take effect at all.\
 \
