@@ -11,6 +11,7 @@ This repository is constantly being updated and added to by the community. Pull 
 - [What is database](#what-is-database)
 - [PostgreSQL](#postgresql)
 - [PostgreSQL Installation](#postgresql-installation)
+- [PostgreSQL Extensions](#postgresql-extensions)
 - [PostgreSQL Basic Commands](#postgresql-basic-commands)
 - [Queries at a Glance](#queries-at-a-glance)
   - [1. Creating and Deleting Queries](#1-creating-and-deleting-queries)
@@ -50,6 +51,18 @@ sudo apt-get update
 # Install the latest version of PostgreSQL.
 # If you want a specific version, use 'postgresql-12' or similar instead of 'postgresql':
 sudo apt-get install postgresql-12
+```
+
+## PostgreSQL Extensions
+
+```sql
+-- Check available Extensions
+SELECT * FROM pg_available_extensions;
+```
+
+```sql
+-- Install Extension
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 ```
 
 ## PostgreSQL Basic Commands
@@ -434,7 +447,7 @@ INSERT INTO customers (name, email) VALUES('Microsoft' 'hotline@microsoft.com') 
 Output:
 
 ```
-Do Nothing
+INSERT 0 0
 ```
 
 ```sql
