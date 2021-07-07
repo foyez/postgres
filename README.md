@@ -67,6 +67,19 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 ## PostgreSQL Basic Commands
 
+```sh
+sudo su - postgres
+psql
+
+for connection info : \conninfo
+for password : \password
+
+for roles : \du
+for database : \l 
+for relation : \d
+for table : \dt
+```
+
 - create a linux user by typing (from non-root account):
 
 ```sh
